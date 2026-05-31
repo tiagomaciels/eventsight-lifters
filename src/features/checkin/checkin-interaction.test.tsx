@@ -2,13 +2,11 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import EventDashboardPage from "@/app/events/[id]/page";
+import { DashboardClient } from "@/app/events/[id]/DashboardClient";
 import { useCheckinStore } from "@/features/checkin/store";
 import * as api from "@/features/events/api";
 import type { EventDetail, Participant } from "@/types/domain";
 
-// useParams sempre devolve EVT-001 nestes testes
-vi.mock("next/navigation", () => ({ useParams: () => ({ id: "EVT-001" }) }));
 // Mock na fronteira da rede
 vi.mock("@/features/events/api");
 // Recharts não rende bem em jsdom — irrelevante para a interação
@@ -45,13 +43,13 @@ function makeDetail(overrides: Partial<EventDetail> = {}): EventDetail {
   };
 }
 
-function renderPage() {
+function renderDashboard(id = "EVT-001") {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
   return render(
     <QueryClientProvider client={client}>
-      <EventDashboardPage />
+      <DashboardClient id={id} />
     </QueryClientProvider>,
   );
 }
@@ -67,9 +65,8 @@ describe("interação de check-in", () => {
       makeDetail({ participants: [participant("P1", "vip", "outside", "Ana VIP")] }),
     );
     const user = userEvent.setup();
-    renderPage();
+    renderDashboard();
 
-    // Mobile card + desktop row renderizam ambos no jsdom; pega o primeiro.
     const entryButtons = await screen.findAllByRole("button", {
       name: /registrar entrada/i,
     });
@@ -78,7 +75,7 @@ describe("interação de check-in", () => {
 
     await user.click(entryButtons[0]!);
 
-    // Ambas as instâncias devem atualizar para "Presente" e "Registrar Saída".
+    // Mobile card + desktop row ambos atualizam para "Presente"
     expect(await screen.findAllByText("Presente")).toBeTruthy();
     expect(screen.getAllByRole("button", { name: /registrar sa/i }).length).toBeGreaterThan(0);
   });
@@ -100,12 +97,11 @@ describe("interação de check-in", () => {
         ],
       }),
     );
-    renderPage();
+    renderDashboard();
 
     const buttons = await screen.findAllByRole("button", {
       name: /registrar entrada/i,
     });
-    // Todas as instâncias (mobile + desktop) devem estar desabilitadas.
     buttons.forEach((b) => expect(b).toBeDisabled());
   });
 
@@ -116,7 +112,7 @@ describe("interação de check-in", () => {
         participants: [participant("P3", "vip", "outside", "Carla VIP")],
       }),
     );
-    renderPage();
+    renderDashboard();
 
     const buttons = await screen.findAllByRole("button", {
       name: /registrar entrada/i,
