@@ -5,6 +5,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import type { CheckinResult } from "@/domain/checkin";
 import type { Checkin, EventSummary, Participant } from "@/types/domain";
 import { ParticipantRow } from "./ParticipantRow";
 
@@ -12,7 +13,7 @@ interface ParticipantsTableProps {
   participants: Participant[];
   event: EventSummary;
   history: Checkin[];
-  onCheckin: (participantId: string) => void;
+  onCheckin: (participant: Participant) => CheckinResult;
 }
 
 export function ParticipantsTable({
@@ -23,10 +24,7 @@ export function ParticipantsTable({
 }: ParticipantsTableProps) {
   if (participants.length === 0) {
     return (
-      <p
-        role="status"
-        className="py-8 text-center text-sm text-muted-foreground"
-      >
+      <p role="status" className="py-8 text-center text-sm text-muted-foreground">
         Nenhum participante cadastrado.
       </p>
     );

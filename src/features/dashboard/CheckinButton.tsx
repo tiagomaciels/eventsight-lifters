@@ -9,10 +9,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
-  attemptCheckin,
   canEnter,
   canExit,
   checkinDisabledReason,
+  type CheckinResult,
 } from "@/domain/checkin";
 import type { Checkin, EventSummary, Participant } from "@/types/domain";
 
@@ -20,7 +20,8 @@ interface CheckinButtonProps {
   participant: Participant;
   event: EventSummary;
   history: Checkin[];
-  onCheckin: (participantId: string) => void;
+  /** Aplica o check-in no store e devolve o resultado da decisão de domínio. */
+  onCheckin: (participant: Participant) => CheckinResult;
 }
 
 export function CheckinButton({
@@ -31,25 +32,24 @@ export function CheckinButton({
 }: CheckinButtonProps) {
   const canDoEntry = canEnter(participant, event, history);
   const canDoExit = canExit(participant, event);
-  const disabledReason = checkinDisabledReason(participant, event, history);
   const isDisabled = !canDoEntry && !canDoExit;
+  const disabledReason = checkinDisabledReason(participant, event, history);
 
   function handleClick() {
-    const result = attemptCheckin(participant, event, history);
+    const result = onCheckin(participant);
 
     if (result.ok) {
-      const message =
+      toast.success(
         result.action === "entry"
           ? `Entrada registrada para ${participant.name}`
-          : `Saída registrada para ${participant.name}`;
-      toast.success(message);
-      onCheckin(participant.id);
+          : `Saída registrada para ${participant.name}`,
+      );
     } else {
-      const message =
+      toast.error(
         result.reason === "already_checked_in"
           ? `${participant.name} já realizou check-in`
-          : "Evento encerrado — interações bloqueadas";
-      toast.error(message);
+          : "Evento encerrado — interações bloqueadas",
+      );
     }
   }
 
@@ -68,6 +68,7 @@ export function CheckinButton({
     </Button>
   );
 
+  // Botão desabilitado mostra o motivo (acessível por teclado via span focável).
   if (isDisabled && disabledReason) {
     return (
       <TooltipProvider>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -9,10 +9,11 @@ import { EntriesChart } from "@/features/dashboard/EntriesChart";
 import { MetricCards } from "@/features/dashboard/MetricCards";
 import { ParticipantsTable } from "@/features/dashboard/ParticipantsTable";
 import { useEvent } from "@/features/events/hooks";
+import { useCheckinStore } from "@/features/checkin/store";
 import { statusBadge } from "@/lib/tokens";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Checkin, Participant } from "@/types/domain";
+import type { Participant } from "@/types/domain";
 
 function DashboardSkeleton() {
   return (
@@ -30,57 +31,41 @@ function DashboardSkeleton() {
 
 export default function EventDashboardPage() {
   // useParams() é a forma correta em Client Components no Next.js 16
-  // (params como prop é Promise em Server Components nesta versão)
+  // (params como prop é Promise em Server Components nesta versão).
   const { id } = useParams<{ id: string }>();
   const { data: event, isLoading, isError, refetch } = useEvent(id);
 
-  // O store de check-in (Sessão 5) vai substituir este estado local.
-  // Por ora, mantemos uma cópia local de participants e checkins para
-  // que a tabela já seja renderizável e o CheckinButton já funcione de forma básica.
-  const [participants, setParticipants] = useState<Participant[]>([]);
-  const [checkins, setCheckins] = useState<Checkin[]>([]);
+  // O store Zustand é a fonte única de verdade do estado mutável da sessão.
+  const seed = useCheckinStore((s) => s.seed);
+  const apply = useCheckinStore((s) => s.apply);
+  const statuses = useCheckinStore((s) => s.statuses);
+  const log = useCheckinStore((s) => s.log);
+  const seededEventId = useCheckinStore((s) => s.eventId);
 
-  // Semeia o estado local UMA vez quando o event carrega (simulação da Sessão 5)
-  const [seeded, setSeeded] = useState(false);
-  if (event && !seeded) {
-    setParticipants(event.participants);
-    setCheckins(event.checkins);
-    setSeeded(true);
-  }
+  // Semeia o store quando o evento carrega (sincroniza store com dados externos;
+  // não é busca de dados). Idempotente por evento dentro do próprio store.
+  useEffect(() => {
+    if (event) seed(event);
+  }, [event, seed]);
+
+  const ready = !!event && seededEventId === event.id;
+
+  // Participantes exibidos: metadados da API + status vindo do store (quando
+  // já semeado para ESTE evento). Evita vazar status de outro evento.
+  const participants = useMemo<Participant[]>(() => {
+    if (!event) return [];
+    return event.participants.map((p) => ({
+      ...p,
+      status: ready ? (statuses[p.id] ?? p.status) : p.status,
+    }));
+  }, [event, statuses, ready]);
+
+  // Check-ins exibidos: log do store (ao vivo) quando pronto, senão o da API.
+  const checkins = ready ? log : (event?.checkins ?? []);
 
   const handleCheckin = useCallback(
-    (participantId: string) => {
-      if (!event) return;
-
-      setParticipants((prev) =>
-        prev.map((p) => {
-          if (p.id !== participantId) return p;
-          return {
-            ...p,
-            status: p.status === "inside" ? "outside" : "inside",
-          };
-        }),
-      );
-
-      const action =
-        participants.find((p) => p.id === participantId)?.status === "outside"
-          ? "entry"
-          : "exit";
-
-      setCheckins((prev) => [
-        ...prev,
-        {
-          id: `sim-${Date.now()}`,
-          event_id: event.id,
-          participant_id: participantId,
-          timestamp: new Date().toISOString(),
-          success: true,
-          action,
-          error_reason: null,
-        },
-      ]);
-    },
-    [event, participants],
+    (participant: Participant) => apply(participant, event!),
+    [apply, event],
   );
 
   return (
@@ -105,7 +90,6 @@ export default function EventDashboardPage() {
       >
         {event && (
           <div className="flex flex-col gap-8">
-            {/* Cabeçalho */}
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <h1 className="text-2xl font-bold tracking-tight">{event.name}</h1>
@@ -116,16 +100,13 @@ export default function EventDashboardPage() {
               </Badge>
             </div>
 
-            {/* Cards de métrica */}
             <MetricCards event={event} checkins={checkins} />
 
-            {/* Gráfico */}
             <section aria-label="Evolução de entradas ao longo do tempo">
               <h2 className="mb-4 text-lg font-semibold">Entradas ao longo do tempo</h2>
               <EntriesChart checkins={checkins} />
             </section>
 
-            {/* Tabela de participantes */}
             <section aria-label="Participantes do evento">
               <h2 className="mb-4 text-lg font-semibold">
                 Participantes{" "}
