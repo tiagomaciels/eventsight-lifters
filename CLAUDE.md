@@ -4,7 +4,7 @@ Painel de gestão de eventos (front-end). Acompanha eventos, controla acesso de 
 
 > Este arquivo carrega em toda sessão — mantenha enxuto. Documentos de apoio (leia sob demanda, NÃO carregue por padrão):
 > - `docs/PLANEJAMENTO.md` — plano completo: telas, componentes, cronograma, edge cases detalhados.
-> - `docs/GUIA-SENIOR.md` — racional das práticas sênior (comentários, git, anti-padrões).
+> - `docs/GUIA.md` — racional das práticas sênior (comentários, git, anti-padrões).
 > Consulte-os quando a tarefa exigir profundidade; não há necessidade de relê-los a cada turno.
 
 ## Comandos
@@ -72,4 +72,4 @@ Código autodocumentado; comentários explicam o **porquê**, nunca o **o quê**
 - `.gitignore` correto; nunca comitar `node_modules`, `.next`, `.env*`, segredos.
 
 ## Definition of Done
-Antes de considerar pronto: `tsc --noEmit` limpo, `lint` sem warnings, `test` verde, 4 estados em cada tela, todos os edge cases tratados, responsivo no mobile, navegável por teclado, README roda do zero. Detalhes em `docs/GUIA-SENIOR.md` (checklist final).
+Antes de considerar pronto: `tsc --noEmit` limpo, `lint` sem warnings, `test` verde, 4 estados em cada tela, todos os edge cases tratados, responsivo no mobile, navegável por teclado, README roda do zero. Detalhes em `docs/GUIA.md` (checklist final).
