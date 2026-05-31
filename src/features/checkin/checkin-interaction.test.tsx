@@ -69,17 +69,18 @@ describe("interação de check-in", () => {
     const user = userEvent.setup();
     renderPage();
 
-    const entryButton = await screen.findByRole("button", {
+    // Mobile card + desktop row renderizam ambos no jsdom; pega o primeiro.
+    const entryButtons = await screen.findAllByRole("button", {
       name: /registrar entrada/i,
     });
-    expect(screen.getByText("Ausente")).toBeTruthy();
+    expect(entryButtons.length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Ausente").length).toBeGreaterThan(0);
 
-    await user.click(entryButton);
+    await user.click(entryButtons[0]!);
 
-    // Status muda para "Presente" e o botão vira "Registrar Saída".
-    // Matcher sem o acento (í) para evitar mismatch de normalização Unicode.
-    expect(await screen.findByText("Presente")).toBeTruthy();
-    expect(screen.getByRole("button", { name: /registrar sa/i })).toBeTruthy();
+    // Ambas as instâncias devem atualizar para "Presente" e "Registrar Saída".
+    expect(await screen.findAllByText("Presente")).toBeTruthy();
+    expect(screen.getAllByRole("button", { name: /registrar sa/i }).length).toBeGreaterThan(0);
   });
 
   it("desabilita o botão para um normal que já fez check-in", async () => {
@@ -101,10 +102,11 @@ describe("interação de check-in", () => {
     );
     renderPage();
 
-    const button = await screen.findByRole("button", {
+    const buttons = await screen.findAllByRole("button", {
       name: /registrar entrada/i,
     });
-    expect(button).toBeDisabled();
+    // Todas as instâncias (mobile + desktop) devem estar desabilitadas.
+    buttons.forEach((b) => expect(b).toBeDisabled());
   });
 
   it("desabilita o botão de entrada em evento encerrado", async () => {
@@ -116,9 +118,9 @@ describe("interação de check-in", () => {
     );
     renderPage();
 
-    const button = await screen.findByRole("button", {
+    const buttons = await screen.findAllByRole("button", {
       name: /registrar entrada/i,
     });
-    expect(button).toBeDisabled();
+    buttons.forEach((b) => expect(b).toBeDisabled());
   });
 });
