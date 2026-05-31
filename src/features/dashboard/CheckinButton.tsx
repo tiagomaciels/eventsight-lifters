@@ -63,6 +63,7 @@ export function CheckinButton({
       disabled={isDisabled}
       onClick={handleClick}
       aria-label={`${label} — ${participant.name}`}
+      className="min-h-11 px-4"
     >
       {label}
     </Button>

@@ -35,7 +35,7 @@ export function MetricCards({ event, checkins }: MetricCardsProps) {
 
   return (
     <section aria-label="Métricas do evento">
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <MetricCard
           label="Participantes Esperados"
           value={String(event.expected_count)}
