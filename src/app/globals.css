@@ -48,38 +48,40 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  /* Paleta slate refinada: cinzas com micro-chroma fria (hue ~260) para
+     sofisticação. Lightness preservada para manter contraste AA. */
+  --background: oklch(0.985 0.002 255);
+  --foreground: oklch(0.17 0.012 264);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.17 0.012 264);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.17 0.012 264);
+  --primary: oklch(0.22 0.02 264);
+  --primary-foreground: oklch(0.985 0.002 255);
+  --secondary: oklch(0.968 0.004 256);
+  --secondary-foreground: oklch(0.22 0.02 264);
+  --muted: oklch(0.968 0.004 256);
+  --muted-foreground: oklch(0.5 0.016 257);
+  --accent: oklch(0.96 0.006 256);
+  --accent-foreground: oklch(0.22 0.02 264);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --border: oklch(0.92 0.005 256);
+  --input: oklch(0.92 0.005 256);
+  --ring: oklch(0.62 0.02 260);
+  --chart-1: oklch(0.45 0.03 262);
+  --chart-2: oklch(0.55 0.022 260);
+  --chart-3: oklch(0.65 0.016 258);
+  --chart-4: oklch(0.72 0.012 257);
+  --chart-5: oklch(0.8 0.008 256);
+  --radius: 0.75rem;
+  --sidebar: oklch(0.985 0.002 255);
+  --sidebar-foreground: oklch(0.17 0.012 264);
+  --sidebar-primary: oklch(0.22 0.02 264);
+  --sidebar-primary-foreground: oklch(0.985 0.002 255);
+  --sidebar-accent: oklch(0.96 0.006 256);
+  --sidebar-accent-foreground: oklch(0.22 0.02 264);
+  --sidebar-border: oklch(0.92 0.005 256);
+  --sidebar-ring: oklch(0.62 0.02 260);
 }
 
 .dark {
@@ -126,6 +128,14 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* Leve profundidade: um banho frio bem sutil no topo, em vez de branco chapado. */
+    background-image: radial-gradient(
+      110% 70% at 50% -8%,
+      oklch(0.93 0.012 258 / 0.5),
+      transparent 55%
+    );
+    background-repeat: no-repeat;
+    background-attachment: fixed;
   }
   /* Anel de foco global: garante contraste AA e visibilidade em toda a navegação por teclado. */
   :focus-visible {
