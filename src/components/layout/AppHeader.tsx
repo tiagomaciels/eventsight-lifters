@@ -1,18 +1,24 @@
 import Link from "next/link";
 import { CalendarRange } from "lucide-react";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export function AppHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-6xl items-center gap-2 px-4 sm:px-6 lg:px-8">
         <Link
           href="/"
-          className="flex items-center gap-2 font-semibold tracking-tight outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+          className="flex items-center gap-2.5 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           aria-label="Eventsight — página inicial"
         >
-          <CalendarRange className="h-5 w-5 text-primary" aria-hidden="true" />
-          <span>Eventsight</span>
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-xs">
+            <CalendarRange className="h-[18px] w-[18px]" aria-hidden="true" />
+          </span>
+          <span className="text-[15px] font-semibold tracking-tight">Eventsight</span>
         </Link>
+        <div className="ml-auto">
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );

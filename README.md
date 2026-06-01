@@ -114,8 +114,6 @@ O enunciado só detalha o status `closed` explicitamente. Por consistência, `ca
 - **Persistência de sessão:** salvar o estado do store em `sessionStorage` para sobreviver a recargas da página.
 - **Filtros no dashboard:** busca e filtro de tipo/status na tabela de participantes.
 - **SSR progressivo:** buscar os metadados básicos do evento no servidor para melhorar o FCP.
-- **Testes E2E:** Playwright cobrindo o fluxo completo de check-in com dados reais da API.
-- **Tema escuro:** tokens e variáveis CSS já suportam `.dark`; faltaria ligar o toggle.
 
 ---
 
@@ -127,5 +125,6 @@ Claude Code (Anthropic) foi utilizado como pair programmer ao longo de todo o de
 2. **Execução em etapas:** o projeto foi quebrado em sessões pelo desenvolvedor. A cada sessão a IA implementava o código; o desenvolvedor revisava a lógica, os tipos, a aderência às regras de negócio e a qualidade geral antes de aprovar.
 3. **TDD:** a decisão de aplicar TDD pleno no domínio puro foi do desenvolvedor. A IA escreveu os testes falhando primeiro (`domain/checkin`, `domain/metrics`), depois as implementações — evidenciando o ciclo red→green no histórico de commits.
 4. **Commit manual:** a IA nunca commitou código de forma autônoma. Ao final de cada passo, ela sugeria a mensagem de commit; o desenvolvedor inspecionava o diff, testava localmente e commitava (ou ajustava) manualmente. O histórico reflete esse processo.
+5. **Testes E2E automatizados:** o fluxo visual foi verificado manualmente com o Playwright MCP durante o desenvolvimento; testes E2E automatizados (Playwright) cobrindo o fluxo completo de check-in com dados reais seriam o próximo passo.
 
 As decisões que definem o projeto — separação domínio/features/UI, Zustand como fonte única de verdade do check-in, `Intl` no lugar de `date-fns`, interpretação da elegibilidade do Normal pelo histórico de entradas, `cancelled` bloqueando tudo como `closed` — foram todas tomadas pelo desenvolvedor. A IA atuou como acelerador de implementação sob direção contínua.

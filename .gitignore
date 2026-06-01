@@ -43,3 +43,8 @@ next-env.d.ts
 
 docs
 memory
+
+# artefatos de inspeção visual (playwright/screenshots)
+.playwright-mcp
+current-*.png
+new-*.png
