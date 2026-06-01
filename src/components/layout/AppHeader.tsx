@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CalendarRange } from "lucide-react";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export function AppHeader() {
   return (
@@ -15,6 +16,9 @@ export function AppHeader() {
           </span>
           <span className="text-[15px] font-semibold tracking-tight">Eventsight</span>
         </Link>
+        <div className="ml-auto">
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );
