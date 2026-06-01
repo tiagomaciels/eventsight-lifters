@@ -8,8 +8,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import type { CheckinResult } from "@/domain/checkin";
 import type { Checkin, EventSummary, Participant } from "@/types/domain";
-import { participantStatusToken, typeBadge } from "@/lib/tokens";
-import { ParticipantRow } from "./ParticipantRow";
+import { typeBadge } from "@/lib/tokens";
+import { ParticipantRow, StatusPill } from "./ParticipantRow";
 import { CheckinButton } from "./CheckinButton";
 
 interface ParticipantsTableProps {
@@ -40,26 +40,16 @@ function ParticipantCard({
   onCheckin: (participant: Participant) => CheckinResult;
 }) {
   const typeToken = typeBadge[participant.type];
-  const statusToken = participantStatusToken[participant.status];
 
   return (
-    <div className="flex items-center justify-between gap-3 rounded-lg border p-4">
-      <div className="flex min-w-0 flex-col gap-1">
+    <div className="flex items-center justify-between gap-3 rounded-xl border bg-card p-4 shadow-xs">
+      <div className="flex min-w-0 flex-col gap-1.5">
         <span className="truncate font-medium">{participant.name}</span>
         <div className="flex items-center gap-2">
           <Badge className={typeToken.className}>{typeToken.label}</Badge>
-          <span
-            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${statusToken.className}`}
-          >
-            <span
-              className={`h-1.5 w-1.5 rounded-full ${participant.status === "inside" ? "bg-emerald-600" : "bg-zinc-400"}`}
-              aria-hidden="true"
-            />
-            {statusToken.label}
-          </span>
+          <StatusPill status={participant.status} />
         </div>
       </div>
-      {/* min-h-11 garante área de toque ≥ 44px no mobile */}
       <div className="shrink-0">
         <CheckinButton
           participant={participant}
@@ -99,14 +89,22 @@ export function ParticipantsTable({
       </ul>
 
       {/* Desktop: tabela completa */}
-      <div className="hidden overflow-x-auto rounded-lg border sm:block">
+      <div className="hidden overflow-hidden rounded-xl border bg-card shadow-xs sm:block">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>Participante</TableHead>
-              <TableHead>Tipo</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Ação</TableHead>
+            <TableRow className="border-b bg-muted/40 hover:bg-muted/40">
+              <TableHead className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Participante
+              </TableHead>
+              <TableHead className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Tipo
+              </TableHead>
+              <TableHead className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Status
+              </TableHead>
+              <TableHead className="text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Ação
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

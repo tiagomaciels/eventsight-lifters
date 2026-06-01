@@ -1,6 +1,5 @@
 "use client";
 
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -15,6 +14,8 @@ import {
   type CheckinResult,
 } from "@/domain/checkin";
 import type { Checkin, EventSummary, Participant } from "@/types/domain";
+import { LogIn, LogOut } from "lucide-react";
+import { toast } from "sonner";
 
 interface CheckinButtonProps {
   participant: Participant;
@@ -53,18 +54,20 @@ export function CheckinButton({
     }
   }
 
-  const label =
-    participant.status === "inside" ? "Registrar Saída" : "Registrar Entrada";
+  const isInside = participant.status === "inside";
+  const label = isInside ? "Registrar Saída" : "Registrar Entrada";
+  const Icon = isInside ? LogOut : LogIn;
 
   const button = (
     <Button
       size="sm"
-      variant={participant.status === "inside" ? "outline" : "default"}
+      variant={isInside ? "outline" : "default"}
       disabled={isDisabled}
       onClick={handleClick}
       aria-label={`${label} — ${participant.name}`}
-      className="min-h-11 px-4"
+      className="min-h-11 gap-1.5 px-4 cursor-pointer"
     >
+      <Icon className="h-4 w-4" aria-hidden="true" />
       {label}
     </Button>
   );
