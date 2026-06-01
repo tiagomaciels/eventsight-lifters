@@ -2,7 +2,11 @@
 
 import { useMemo, useState } from "react";
 import { StateBoundary } from "@/components/feedback/StateBoundary";
-import { EventFilters, type StatusFilter, type SortOrder } from "@/features/events/EventFilters";
+import {
+  EventFilters,
+  type StatusFilter,
+  type SortOrder,
+} from "@/features/events/EventFilters";
 import { EventList } from "@/features/events/EventList";
 import { EventListSkeleton } from "@/features/events/EventCardSkeleton";
 import { useEvents } from "@/features/events/hooks";
@@ -30,14 +34,12 @@ export default function Home() {
         return matchesSearch && matchesStatus;
       })
       .sort((a, b) => {
-        const diff =
-          new Date(a.date).getTime() - new Date(b.date).getTime();
+        const diff = new Date(a.date).getTime() - new Date(b.date).getTime();
         return sortOrder === "asc" ? diff : -diff;
       });
   }, [events, debouncedSearch, statusFilter, sortOrder]);
 
-  const hasActiveFilters =
-    debouncedSearch !== "" || statusFilter !== "all";
+  const hasActiveFilters = debouncedSearch !== "" || statusFilter !== "all";
 
   const emptyMessage = hasActiveFilters
     ? "Nenhum evento encontrado para os filtros aplicados."
@@ -45,14 +47,21 @@ export default function Home() {
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight">Eventos</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Gerencie e acompanhe os eventos cadastrados.
-        </p>
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-2">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Eventos</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Gerencie e acompanhe os eventos cadastrados.
+          </p>
+        </div>
+        {events && (
+          <span className="text-sm text-muted-foreground tabular-nums">
+            {filtered.length} {filtered.length === 1 ? "evento" : "eventos"}
+          </span>
+        )}
       </div>
 
-      <div className="mb-6">
+      <div className="mb-6 rounded-xl border bg-card p-3 shadow-xs">
         <EventFilters
           search={search}
           onSearchChange={setSearch}

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowDownUp } from "lucide-react";
+import { ArrowDownUp, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -33,14 +33,20 @@ export function EventFilters({
 }: EventFiltersProps) {
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-      <Input
-        type="search"
-        placeholder="Buscar por nome..."
-        value={search}
-        onChange={(e) => onSearchChange(e.target.value)}
-        className="sm:max-w-xs"
-        aria-label="Buscar eventos por nome"
-      />
+      <div className="relative sm:max-w-xs sm:flex-1">
+        <Search
+          className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+          aria-hidden="true"
+        />
+        <Input
+          type="search"
+          placeholder="Buscar por nome..."
+          value={search}
+          onChange={(e) => onSearchChange(e.target.value)}
+          className="pl-9"
+          aria-label="Buscar eventos por nome"
+        />
+      </div>
 
       <Select
         value={statusFilter}
@@ -61,7 +67,7 @@ export function EventFilters({
         value={sortOrder}
         onValueChange={(v) => onSortOrderChange(v as SortOrder)}
       >
-        <SelectTrigger className="sm:w-44" aria-label="Ordenar por data">
+        <SelectTrigger className="sm:w-52" aria-label="Ordenar por data">
           <ArrowDownUp className="mr-2 h-4 w-4" aria-hidden="true" />
           <SelectValue />
         </SelectTrigger>
